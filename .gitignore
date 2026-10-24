@@ -1,0 +1,37 @@
+# TerraCore build outputs
+build/
+build-*/
+*.cmake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Testing/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.exe
+*.pdb
+*.idb
+*.user
+.vs/
+.idea/
+*.code-workspace
+
+# Dependencies downloaded by FetchContent (not committed)
+_dependencies/
+third_party/_downloads/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
