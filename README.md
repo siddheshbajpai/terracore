@@ -1,233 +1,155 @@
 # TerraCore
 
-**A modular C++ 3D engine built with Vulkan.**
+**A modular C++ 3D engine built with Vulkan, with a long-term focus on voxel worlds and conventional 3D games.**
 
-TerraCore is an open-source 3D engine project focused on building a solid foundation for real-time rendering, procedural environments, and game development. The long-term goal is to support both editable voxel worlds and conventional 3D scenes within the same engine.
+TerraCore is an early-stage open-source engine project exploring the foundations of real-time 3D rendering, reusable engine systems, and procedural environments. The goal is to support editable voxel terrain and conventional 3D scenes through a shared rendering foundation.
 
-The project is being developed incrementally, starting with the rendering and platform foundations before moving into terrain generation, scene management, and more advanced engine systems.
+Development is intentionally incremental: establish a reliable build, bring up Vulkan, and build a small working renderer before expanding into terrain, scene management, and higher-level tools.
 
-TerraCore is an early-stage project. The architecture, feature set, and development priorities will evolve as the implementation takes shape. Features described in the roadmap are planned, not claims about what is already available.
+> **Project status:** Early development. Features in this README describe goals and planned work; they should not be interpreted as implemented or production-ready functionality.
 
 ---
 
-## Table of Contents
+## Contents
 
-- [Overview](#overview)
-- [Project Goals](#project-goals)
-- [Planned Features](#planned-features)
+- [Goals](#goals)
+- [Planned capabilities](#planned-capabilities)
 - [Architecture](#architecture)
-- [Technology Choices](#technology-choices)
-- [Development Roadmap](#development-roadmap)
-- [Build and Development](#build-and-development)
-- [Design Principles](#design-principles)
-- [Testing and Performance](#testing-and-performance)
+- [Technology](#technology)
+- [Roadmap](#roadmap)
+- [Build and development](#build-and-development)
+- [Engineering principles](#engineering-principles)
+- [Testing and performance](#testing-and-performance)
 - [Contributing](#contributing)
 - [Licensing](#licensing)
-- [Project Status](#project-status)
+- [Current status](#current-status)
+- [Long-term direction](#long-term-direction)
 
-## Overview
+## Goals
 
-Many 3D projects eventually need the same underlying systems: rendering, asset management, scene organization, resource handling, and tools for inspecting performance. TerraCore is an attempt to build these foundations as a reusable engine rather than tie them to a single game.
+TerraCore aims to provide a reusable foundation for experimenting with and eventually building 3D games.
 
-Voxel worlds are an important part of the project, but they are not the entire engine. A voxel terrain system and a conventional 3D scene should be able to share rendering, cameras, materials, and other common infrastructure without becoming dependent on one another.
+- **A maintainable architecture.** Keep platform integration, rendering, asset handling, scene management, and voxel terrain in clearly defined subsystems.
+- **A renderer that can grow.** Start with a minimal Vulkan renderer and expand based on demonstrated needs rather than speculative feature lists.
+- **Voxel terrain as a first-class use case.** Work toward editable chunk data, procedural generation, and efficient surface meshing.
+- **Conventional 3D scenes.** Support ordinary meshes, textures, materials, cameras, and lighting without making the entire engine depend on voxel-specific concepts.
+- **Reliable development.** Favor reproducible builds, useful diagnostics, automated tests, and performance measurements.
+- **An approachable open-source codebase.** Make the implementation understandable, documented, and practical for other developers to build and contribute to.
 
-The immediate objective is deliberately modest: get a clean C++ project building reliably, establish a working Vulkan renderer, and expand it through small, verifiable milestones.
+## Planned capabilities
 
-The larger vision is to grow that foundation into an engine suitable for experimentation, learning, and eventually the development of complete games.
-
-## Project Goals
-
-### A maintainable engine architecture
-
-Engine systems should have clear responsibilities and interfaces. Rendering, platform integration, scene management, asset loading, and voxel terrain should not be tangled into a single application or a collection of tightly coupled classes.
-
-### A renderer that can grow
-
-Vulkan provides explicit control over GPU resources and rendering work, along with the responsibility of managing those resources correctly. TerraCore will use that control to build a renderer that can evolve from basic mesh rendering toward more advanced real-time graphics.
-
-### First-class voxel terrain
-
-The voxel system should support editable chunk data, procedural terrain generation, and efficient surface meshing. It should be possible to modify the world without rebuilding the entire terrain.
-
-### Support for conventional 3D scenes
-
-The engine should also handle ordinary meshes, textures, materials, cameras, and lighting. Voxel-specific assumptions should remain inside the voxel subsystem.
-
-### Reliable development workflows
-
-Builds should be reproducible, errors should be diagnosable, and important systems should have automated tests where practical. Performance claims should come from measurements rather than assumptions.
-
-### A useful open-source project
-
-The goal is to build software that other developers can inspect, compile, learn from, and eventually contribute to. Documentation and code quality are part of the project, not tasks to postpone indefinitely.
-
-## Planned Features
-
-The features below describe the intended direction of development. Their availability will depend on completed milestones.
+These are development goals, not a claim that the features are currently available.
 
 ### Rendering
 
-- Vulkan-based rendering foundation
+- Vulkan initialization, device selection, and presentation
 - Camera and view/projection transforms
 - Vertex and index buffers
 - Mesh and texture resources
-- Basic lighting
-- Material and shader management
-- GPU resource lifetime management
+- Basic lighting, materials, and shader management
+- Explicit GPU resource lifetime management
 - Rendering diagnostics and profiling
 
 ### Voxel worlds
 
-- Editable voxel chunk data
+- Voxel data organized into chunks
 - Configurable chunk dimensions
 - Procedural terrain generation
-- Chunk surface meshing
-- Mesh updates after terrain edits
-- Efficient handling of neighboring chunk boundaries
-- A path toward chunk streaming and level of detail (LOD)
+- Surface meshing and mesh updates after edits
+- Correct handling of neighboring chunk boundaries
+- A future path toward chunk streaming and level of detail (LOD)
 
-### Engine systems
+### General engine systems
 
-- Platform abstraction for supported desktop systems
-- Core utilities and application lifecycle
-- Scene and entity organization
+- Desktop platform and application lifecycle
+- Scene and renderable-object organization
 - Asset loading and resource management
-- Configuration and logging
+- Configuration, logging, and error handling
 - Automated tests for core algorithms
-- Reproducible build configuration
+- Documented, reproducible build workflows
 
-### Future directions
+### Possible later work
 
-Once the foundational systems are stable, potential areas of development include:
-
-- Physically based rendering (PBR)
-- Skeletal animation
-- Physics integration
-- Asynchronous chunk generation and streaming
-- Terrain LOD and more advanced visibility techniques
-- Editor and debugging tools
-- More sophisticated materials and lighting
-- Additional rendering techniques as real requirements emerge
-
-These are longer-term possibilities, not commitments to implement every feature. Each addition should have a clear purpose and fit the existing architecture.
+Once the core is stable, areas worth evaluating include physically based rendering (PBR), animation, physics integration, asynchronous terrain generation, LOD, editor tools, and more advanced rendering techniques. These are possibilities rather than commitments; each should solve a real problem and justify its maintenance cost.
 
 ## Architecture
 
-TerraCore is intended to use a modular architecture with dependencies flowing toward well-defined interfaces. The exact module boundaries will be refined as the implementation develops.
+The intended design separates general engine infrastructure from voxel-specific behavior. Exact module boundaries will be refined as the implementation develops.
 
 ```text
 TerraCore
-├── Platform
-│   ├── Window and input
-│   └── OS-specific integration
-├── Core
-│   ├── Application lifecycle
-│   ├── Logging and utilities
-│   └── Configuration
-├── Renderer
-│   ├── Vulkan device and queues
-│   ├── GPU resources
-│   ├── Shaders and materials
-│   └── Render submission
-├── Assets
-│   ├── Asset loading
-│   ├── Textures and meshes
-│   └── Resource management
-├── Scene
-│   ├── Cameras
-│   ├── Scene organization
-│   └── Renderable objects
-└── Voxel
-    ├── Chunk storage
-    ├── Terrain generation
-    └── Surface meshing
+├── Platform   Windowing, input, operating-system integration
+├── Core       Application lifecycle, logging, configuration, utilities
+├── Renderer   Vulkan device, GPU resources, shaders, render submission
+├── Assets     Mesh and texture loading, resource management
+├── Scene      Cameras, scene organization, renderable objects
+└── Voxel      Chunk storage, terrain generation, surface meshing
 ```
 
-This is a logical view of the intended modules, not a claim that every directory or subsystem has already been implemented.
+This is a logical architecture sketch, not a description of existing directories or completed systems.
 
-### Platform
+| Subsystem | Responsibility |
+|---|---|
+| **Platform** | Own window creation, input, and OS-specific integration while keeping platform-dependent code isolated. |
+| **Core** | Provide foundational utilities and application infrastructure without depending on high-level engine features. |
+| **Renderer** | Own Vulkan initialization, GPU resources, shaders, and rendering operations. |
+| **Assets** | Load and manage resources such as meshes and textures, with clear ownership and lifetime rules. |
+| **Scene** | Represent cameras and scene objects and provide a common route for geometry to reach the renderer. |
+| **Voxel** | Own voxel data, chunk operations, terrain generation, and surface extraction without dictating how ordinary scenes work. |
 
-Owns window creation, input, and operating-system integration. Platform-specific code should remain isolated so that supported operating systems can share the majority of the engine.
+Abstraction should be introduced when it reduces coupling, clarifies ownership, improves testability, or supports a concrete future requirement—not for its own sake.
 
-### Core
-
-Contains foundational utilities and application-level infrastructure. It should not depend on the voxel system or on high-level rendering features.
-
-### Renderer
-
-Owns Vulkan initialization, GPU resources, shaders, and rendering operations. Vulkan-specific implementation details should remain within the renderer as much as practical.
-
-### Assets
-
-Handles loading and managing resources such as meshes and textures. Resource ownership and lifetime must be explicit, particularly when GPU resources are involved.
-
-### Scene
-
-Represents the objects and cameras that make up a scene. It provides the common layer through which conventional meshes and voxel-generated geometry can be presented to the renderer.
-
-### Voxel
-
-Owns voxel data, chunk operations, terrain generation, and surface extraction. Its responsibilities should remain separate from general mesh rendering.
-
-### Architectural direction
-
-The goal is not to introduce abstraction for its own sake. Interfaces should be added where they reduce coupling, clarify ownership, make testing easier, or provide a genuine path for future development.
-
-## Technology Choices
+## Technology
 
 | Technology | Intended role |
 |---|---|
 | C++ | Primary implementation language |
 | Vulkan | Low-level graphics API |
 | CMake | Cross-platform build configuration |
-| Windows | Initial desktop platform |
-| Linux | Initial desktop platform |
+| Windows and Linux | Initial desktop platforms |
 | Git | Version control and collaboration |
 
-Additional libraries will be selected as implementation needs become clear. Windowing, mathematics, image loading, testing, and Vulkan development utilities are potential areas where established libraries can save time and reduce unnecessary maintenance.
+Additional dependencies will be selected as implementation needs become clear. Windowing, mathematics, image loading, testing, and Vulkan development tools are areas where established libraries may be preferable to custom implementations.
 
-Dependencies will be evaluated for their functionality, maintenance, platform support, integration cost, and licensing terms before being adopted.
+Dependencies will be assessed for functionality, maintenance, platform support, integration cost, and license compatibility before adoption. The licensing of third-party code and bundled assets will be considered separately from TerraCore's own license.
 
-## Development Roadmap
+## Roadmap
 
-Development will proceed in stages. Later milestones depend on the stability of earlier ones.
+The roadmap is ordered by dependency: later stages should build on working, tested foundations. Progress should be reflected in the repository as implementation becomes available.
 
 ### Phase 1 — Project foundation
 
-- [ ] Establish the repository structure
-- [ ] Configure CMake and the C++ standard
-- [ ] Set up the development workflow for Windows and Linux
+- [ ] Establish the repository and source layout
+- [ ] Configure CMake and select the C++ standard
+- [ ] Document the Windows and Linux development setup
 - [ ] Integrate the minimum required dependencies
-- [ ] Establish basic logging and error handling
+- [ ] Add basic logging and error handling
 - [ ] Add an initial automated test target
-- [ ] Document build prerequisites
 
-**Completion criteria:** A clean checkout can be configured and built using documented instructions on the supported development platforms.
+**Exit criteria:** A clean checkout can be configured and built using documented instructions on the supported development platforms.
 
 ### Phase 2 — Vulkan renderer
 
 - [ ] Create a window and Vulkan instance
 - [ ] Select a physical device and create a logical device
-- [ ] Configure queues and surface presentation
-- [ ] Implement swapchain management
+- [ ] Configure queues, surface presentation, and swapchain management
 - [ ] Render a basic frame
-- [ ] Add a camera
-- [ ] Render a textured mesh
+- [ ] Add a camera and render a textured mesh
 - [ ] Introduce basic lighting
-- [ ] Add Vulkan validation and diagnostic workflows
+- [ ] Document Vulkan validation and diagnostic workflows
 
-**Completion criteria:** The engine can open a window and render a basic 3D scene reliably, with graphics validation enabled during development.
+**Exit criteria:** The application reliably opens a window and renders a basic 3D scene, with validation enabled during development.
 
 ### Phase 3 — Scene and asset foundations
 
-- [ ] Establish mesh and material representations
+- [ ] Define mesh and material representations
 - [ ] Implement basic asset loading
-- [ ] Define scene and renderable-object interfaces
-- [ ] Clarify ownership of CPU and GPU resources
-- [ ] Add examples for ordinary 3D geometry
+- [ ] Establish scene and renderable-object interfaces
+- [ ] Clarify CPU and GPU resource ownership
+- [ ] Add examples using ordinary 3D geometry
 - [ ] Test resource creation, replacement, and cleanup
 
-**Completion criteria:** A scene can load and render conventional 3D assets through reusable engine systems.
+**Exit criteria:** A scene can load and render conventional 3D assets through reusable engine systems.
 
 ### Phase 4 — Voxel terrain
 
@@ -235,54 +157,51 @@ Development will proceed in stages. Later milestones depend on the stability of 
 - [ ] Implement chunk storage and indexing
 - [ ] Generate initial terrain procedurally
 - [ ] Implement surface meshing
-- [ ] Handle chunk boundaries correctly
+- [ ] Handle chunk boundaries and neighboring data
 - [ ] Upload generated meshes to the renderer
-- [ ] Support basic terrain edits
-- [ ] Update affected geometry after edits
+- [ ] Support basic terrain edits and update affected geometry
 
-**Completion criteria:** A procedural voxel world can be rendered and edited without requiring a full-world rebuild for each local change.
+**Exit criteria:** A procedural voxel world can be rendered and edited without rebuilding the entire world for every local change.
 
 ### Phase 5 — Reliability and performance
 
-- [ ] Add tests for voxel indexing and meshing
+- [ ] Test voxel indexing, chunk boundaries, and meshing
 - [ ] Measure terrain generation and mesh-building costs
 - [ ] Profile CPU and GPU rendering work
-- [ ] Identify unnecessary allocations and copies
-- [ ] Improve resource lifetime handling
-- [ ] Add reproducible benchmark scenarios
-- [ ] Document known limitations and measured results
+- [ ] Investigate unnecessary allocations and copies
+- [ ] Verify resource lifetime and cleanup paths
+- [ ] Add repeatable benchmark scenarios
+- [ ] Document methodology, results, and known limitations
 
-**Completion criteria:** Core algorithms have meaningful tests, and performance decisions can be supported by repeatable measurements.
+**Exit criteria:** Important algorithms have meaningful tests, and performance decisions are backed by reproducible measurements.
 
-### Phase 6 — Integrated demonstration
+### Phase 6 — Demonstrations
 
 - [ ] Build a voxel-world demonstration
 - [ ] Build a conventional 3D scene demonstration
-- [ ] Exercise shared renderer and asset systems
+- [ ] Exercise shared rendering and asset systems
 - [ ] Document build and run instructions
-- [ ] Publish screenshots or a recorded demonstration
-- [ ] Record the tested platforms and known issues
+- [ ] Publish screenshots or a recorded demo
+- [ ] Record tested platforms and known issues
 
-**Completion criteria:** Both types of scene run through the same engine foundation, demonstrating that the architecture serves more than one rendering use case.
+**Exit criteria:** Both scene types run on the same engine foundation, demonstrating that the architecture supports more than one use case.
 
-Streaming, LOD, PBR, animation, physics, and editor tools will be considered after the core systems have demonstrated that they are worth extending.
+Streaming, LOD, PBR, animation, physics, and editor tools should be considered after the foundational systems are working and their limitations are understood.
 
-## Build and Development
+## Build and development
 
-TerraCore is planned to use CMake, with Vulkan SDK requirements documented as the renderer becomes available.
+The project is intended to use CMake. Vulkan SDK requirements and other dependencies will be documented alongside the implementation that needs them.
 
-Because the project is in its early stages, build commands and dependency requirements will be documented alongside the corresponding implementation. Instructions should always match the actual state of the repository.
-
-The intended workflow is:
+The general development workflow will be:
 
 1. Install the documented compiler, CMake version, and platform dependencies.
-2. Install the required Vulkan SDK when building renderer components.
-3. Configure the project using CMake.
-4. Build the selected targets.
+2. Install the Vulkan SDK when building renderer components.
+3. Configure the project with CMake.
+4. Build the required targets.
 5. Run the available tests.
 6. Launch the relevant example or demonstration.
 
-Example commands for a configured CMake project will follow this general pattern:
+A typical CMake workflow looks like this:
 
 ```bash
 cmake -S . -B build
@@ -290,99 +209,72 @@ cmake --build build --config Debug
 ctest --test-dir build -C Debug --output-on-failure
 ```
 
-These commands describe the intended workflow. They are not a guarantee that the current repository already contains the corresponding targets.
+**These commands illustrate the intended workflow; they are not a guarantee that the current repository already contains the corresponding build targets.** Follow the actual build files and platform-specific instructions as they are added.
 
-Exact compiler versions, SDK versions, generator choices, and platform-specific setup instructions will be recorded as they are established.
+## Engineering principles
 
-## Design Principles
+- **Correctness before optimization.** Establish expected behavior, test it, and measure it before adding performance-driven complexity.
+- **Explicit ownership.** GPU resources, asset data, and asynchronous work need clear lifetime rules.
+- **Separation of concerns.** The renderer should not need to know how terrain was generated, and ordinary scenes should not depend on voxel-specific logic.
+- **Measured complexity.** Avoid building elaborate job systems, editor frameworks, or abstractions before there is a concrete reason.
+- **Reproducibility.** Document build steps, dependency choices, test procedures, and benchmark conditions.
+- **Recorded decisions.** For significant architectural choices, explain the problem, alternatives, and trade-offs so future changes remain understandable.
 
-### Correctness before optimization
+## Testing and performance
 
-Get the behavior right, test it, and measure it before adding complexity for performance.
-
-### Explicit resource ownership
-
-GPU resources, asset data, and asynchronous work need clear ownership and lifetime rules. Undefined ownership is a source of difficult bugs in long-lived engine projects.
-
-### Keep subsystems independent
-
-Voxel terrain should use the engine's common rendering facilities rather than dictate how every scene works. Likewise, the renderer should not need to understand how terrain was generated.
-
-### Prefer measured complexity
-
-Advanced systems should be introduced when there is a concrete need. Prematurely implementing an elaborate job system, editor framework, or rendering abstraction creates maintenance costs before their value is known.
-
-### Make the project reproducible
-
-Build instructions, dependency versions, tests, and benchmark procedures should make it possible for another developer to reproduce important results.
-
-### Document decisions
-
-Significant architectural choices should include the problem being solved, alternatives considered, and the trade-offs involved. This makes future changes easier to reason about.
-
-## Testing and Performance
-
-Testing will be introduced alongside the systems it is intended to protect.
-
-Examples of useful test areas include:
+Testing should be introduced alongside the systems it protects. Useful areas include:
 
 - Voxel coordinate conversion and chunk indexing
-- Chunk-boundary and neighbor handling
+- Chunk boundaries and neighbor handling
 - Mesh generation for empty, solid, and mixed voxel data
 - Terrain generation with repeatable inputs
 - Resource-management and cleanup paths
 - Scene and asset-loading error handling
 - Build and integration checks
 
-Performance work will focus on measurable costs, including CPU time spent generating terrain and meshes, memory use, GPU frame time, draw submission, and the cost of updating edited chunks.
+Performance work should examine measurable costs such as CPU time spent generating terrain and meshes, memory use, GPU frame time, draw submission, and the cost of updating edited chunks.
 
-Benchmarks should document their hardware, software configuration, workload, and measurement method. Results should not be compared without accounting for differences in conditions.
+Benchmarks should record the hardware, software configuration, workload, and measurement method. Results should not be compared without considering differences in test conditions. No performance claims should be made until they are supported by actual measurements.
 
 ## Contributing
 
-TerraCore is intended to be developed in the open, with room for contributors as the project matures.
+TerraCore is intended to be developed in the open, with room for contributions as the project matures.
 
-Before contributing, check the existing implementation, open issues, and roadmap to understand the current direction. For substantial changes, discussing the proposed design before writing a large implementation can help avoid incompatible approaches.
+Before starting a substantial change, review the existing implementation and roadmap. For larger architectural work, opening an issue to discuss the design first can help avoid incompatible approaches.
 
-Useful contributions include:
+Useful early contributions include:
 
-- Bug reports with reproducible steps
-- Focused fixes with tests
+- Reproducible bug reports
+- Focused fixes accompanied by tests
 - Build and platform improvements
 - Documentation corrections
 - Small, well-scoped architectural improvements
 - Profiling results and reproducible performance investigations
 
-Contribution guidelines, issue templates, and pull-request expectations will be added as the repository and development workflow take shape.
+Formal contribution guidelines, issue templates, and pull-request expectations can be added as the codebase and workflow take shape. Please avoid presenting planned features as completed functionality in issues, documentation, or demonstrations.
 
 ## Licensing
 
-The intended licensing direction is an open-source engine core, with Apache License 2.0 under consideration.
+Apache License 2.0 is under consideration for the engine, but the final licensing decision has not been made in this README. The repository should include the finalized license and applicable notices before a license is represented as adopted.
 
-The final license will be established after reviewing dependencies and their compatibility. Third-party libraries, sample assets, fonts, datasets, and other bundled materials may carry separate license terms.
+Third-party libraries, sample assets, fonts, datasets, and other bundled materials may have separate terms. Their licenses and compatibility should be reviewed individually.
 
-Until the repository contains the finalized license and applicable notices, do not assume that the intended license has already been formally applied.
+The long-term aim is to keep the engine core genuinely useful as open-source software. Optional professional tools or support may be explored if there is demonstrated demand, without making the core artificially limited.
 
-The long-term aim is to keep the engine core useful on its own. Optional professional tools or support may be considered if there is demonstrated demand, but commercial plans should not compromise the usefulness of the open-source foundation.
+## Current status
 
-## Project Status
+TerraCore is in its early development and planning stage. The immediate priority is a reliable project build, followed by a minimal Vulkan application and renderer.
 
-TerraCore is in its early development and planning stage.
+At this stage, the roadmap communicates intended direction rather than completed functionality. As development progresses, this section should be updated with concrete information: what builds, what runs, which platforms have been tested, and what limitations remain.
 
-The initial focus is on establishing a reliable build system, bringing up Vulkan, and creating a small renderer that can serve as the foundation for the rest of the engine.
+There is no claim of production readiness or a fixed release date.
 
-The roadmap is a direction for development, not a list of completed features. Implemented functionality, tested platforms, known limitations, and release notes should be updated as the project progresses.
+## Long-term direction
 
-There is no promise of production readiness or a fixed release date.
+The ambition is to grow TerraCore into a capable engine for both voxel-based and conventional 3D games, with room to explore larger worlds, more advanced graphics, and the tools needed to build complete projects.
 
-## Long-Term Direction
-
-The long-term ambition is to develop TerraCore into a capable engine for both voxel-based and conventional 3D games, with room to explore more advanced graphics, larger worlds, and the tools needed to build complete projects.
-
-That ambition will be pursued one working subsystem at a time.
-
-A small renderer that builds reliably, produces correct results, and can be understood by its maintainers is a better starting point than a large collection of unfinished systems.
+The way there is through working subsystems, clear boundaries, tests, and evidence—not through a large list of promises. A small renderer that builds reliably and can be understood by its maintainers is the right foundation for a much more ambitious engine.
 
 ---
 
-**TerraCore is built incrementally, with an emphasis on sound engineering, useful documentation, and results that can be reproduced.**
+*Built incrementally, with an emphasis on sound engineering, clear documentation, and reproducible results.*
