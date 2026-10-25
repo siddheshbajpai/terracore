@@ -27,7 +27,8 @@ void Log::log(LogLevel lvl, const char* fmt, Args... args) {
     std::fprintf(stderr, "[%s] ", levelName(lvl));
     // Minimal vararg formatting kept simple for C++14 compatibility.
     // A proper formatter (fmtlib) can be added in a later milestone.
-    (void)args;
+    std::initializer_list<int> unused = { (void(args), 0)... };
+    (void)unused;
     std::fputs(fmt, stderr);
     std::fputc('\n', stderr);
 }

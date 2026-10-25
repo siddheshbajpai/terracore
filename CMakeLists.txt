@@ -145,32 +145,6 @@ if(TERRA_CORE_USE_GLFW AND TERRA_CORE_HAS_GLFW)
 endif()
 
 # ---------------------------------------------------------------------------
-# Renderer library (Vulkan)
-# ---------------------------------------------------------------------------
-add_library(terra_renderer STATIC
-    "${TERRA_CORE_SOURCE_DIR}/renderer/vulkan_context.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/swapchain.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/pipeline.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/mesh.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/texture.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/material.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/command_buffer.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/profiler.cpp"
-    "${TERRA_CORE_SOURCE_DIR}/renderer/renderer.cpp"
-)
-target_include_directories(terra_renderer PUBLIC
-    "${TERRA_CORE_PUBLIC_INCLUDES}"
-    "${TERRA_CORE_THIRD_PARTY_INCLUDE_DIRS}"
-)
-target_link_libraries(terra_renderer PUBLIC
-    terra_core
-    Vulkan::Vulkan
-)
-if(TERRA_CORE_USE_GLFW AND TERRA_CORE_HAS_GLFW)
-    target_link_libraries(terra_renderer PUBLIC ${GLFW_LIBRARY})
-endif()
-
-# ---------------------------------------------------------------------------
 # Assets library
 # ---------------------------------------------------------------------------
 add_library(terra_assets STATIC

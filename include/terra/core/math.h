@@ -36,7 +36,12 @@ struct vec3 {
     vec3& operator-=(const vec3& o) { x -= o.x; y -= o.y; z -= o.z; return *this; }
     vec3& operator*=(float s) { x *= s; y *= s; z *= s; return *this; }
 
-    float length() const { return std::sqrtf(x * x + y * y + z * z); }
+    bool operator==(const vec3& o) const {
+        return x == o.x && y == o.y && z == o.z;
+    }
+    bool operator!=(const vec3& o) const { return !(*this == o); }
+
+    float length() const { return sqrtf(x * x + y * y + z * z); }
     float lengthSquared() const { return x * x + y * y + z * z; }
     vec3 normalized() const {
         float l = length();
@@ -81,6 +86,14 @@ struct mat4 {
 
     float* operator[](int col) { return &m[col * 4]; }
     const float* operator[](int col) const { return &m[col * 4]; }
+
+    bool operator==(const mat4& o) const {
+        for (int i = 0; i < 16; ++i) {
+            if (m[i] != o.m[i]) return false;
+        }
+        return true;
+    }
+    bool operator!=(const mat4& o) const { return !(*this == o); }
 };
 
 inline mat4 operator*(const mat4& a, const mat4& b) {
@@ -120,7 +133,7 @@ inline mat4 scale(const vec3& s) {
 inline mat4 perspective(float fovY, float aspect, float zNear, float zFar) {
     mat4 r;
     for (int i = 0; i < 16; ++i) r.m[i] = 0.0f;
-    float f = 1.0f / std::tanf(radians(fovY) * 0.5f);
+    float f = 1.0f / tanf(radians(fovY) * 0.5f);
     float nf = 1.0f / (zNear - zFar);
     r.m[0]  = f / aspect;
     r.m[5]  = f;
